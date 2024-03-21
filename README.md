@@ -36,8 +36,16 @@ self-hosted runner.
    ```
 
 5. as the `gherunner` user, clone this repo in a writable location
-6. set the `GITHUB`, `REPO` and `TOKEN` settings as appropriate in the
-   `ghe-actions-docker.env` file
+6. set the `GITHUB`, `TARGET` and `TOKEN` settings as appropriate in the
+   `ghe-actions-docker.env` file (further information and examples are
+   provided in this file).
+
+7. start and enable the docker service:
+
+   ```
+   systemctl start docker
+   systemctl enable docker
+   ```
 
 ## Build
 

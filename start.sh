@@ -1,15 +1,15 @@
 #!/bin/bash
 
 echo "GITHUB ${GITHUB}"
-echo "REPO ${REPO}"
+echo "TARGET ${TARGET}"
 echo "TOKEN ${TOKEN}"
 
 REG_TOKEN=$(curl -k -X POST -H "Authorization: token ${TOKEN}" -H "Accept: application/vnd.github+json" \
-	https://api.${GITHUB}/repos/${REPO}/actions/runners/registration-token | jq .token --raw-output)
+	https://api.${GITHUB}/${TARGET}/actions/runners/registration-token | jq .token --raw-output)
 
 cd /home/docker/actions-runner
 
-./config.sh --url https://$GITHUB/${REPO} --token ${REG_TOKEN} --unattended
+./config.sh --url https://$GITHUB/${TARGET} --token ${REG_TOKEN} --unattended
 
 cleanup() {
     echo "Removing runner..."
