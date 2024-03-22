@@ -35,7 +35,8 @@ self-hosted runner.
    usermod -G docker gherunner
    ```
 
-5. as the `gherunner` user, clone this repo in a writable location
+5. as the `gherunner` user, download the latest release of this repo in
+   a writable location
 6. set the `GITHUB`, `TARGET` and `TOKEN` settings as appropriate in the
    `ghe-actions-docker.env` file (further information and examples are
    provided in this file).
