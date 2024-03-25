@@ -66,6 +66,14 @@ docker compose up --scale runner=X -d
 
 where `X` is the number of runners.
 
+
+## Deleting stuck runners
+
+Runners should automatically clean up after themselves once stopped, but if
+a SIGKILL occurs, a container may get stuck in the "Offline" state. Should
+this happen, run the `./delete-offline-runners.sh` script with the required
+arguments.
+
 ## Useful commands
 
 * `docker image list` - view a list of built images
