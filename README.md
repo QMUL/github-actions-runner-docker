@@ -21,36 +21,43 @@ self-hosted runner.
 ## VM setup
 
 1. create a Rocky 9 VM from a VM template
-2. install docker and jq:
+
+2. install docker and jq (as root):
 
    ```
    dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
    dnf install docker-ce docker-ce-cli containerd.io jq
    ```
 
-3. create the local user `gherunner`
-4. add the `gherunner` user to the `docker` group:
+3. create the local user `gherunner` (as root):
 
    ```
-   usermod -G docker gherunner
+   useradd -m gherunner
    ```
 
-5. as the `gherunner` user, download the latest release of this repo in
-   a writable location
-6. set the `GITHUB`, `TARGET` and `TOKEN` settings as appropriate in the
-   `ghe-actions-docker.env` file (further information and examples are
-   provided in this file).
-
-7. start and enable the docker service:
+4. start and enable the docker service (as root):
 
    ```
    systemctl start docker
    systemctl enable docker
    ```
 
+5. add the `gherunner` user to the `docker` group (as root):
+
+   ```
+   usermod -G docker gherunner
+   ```
+
+6. as the `gherunner` user, download the latest release of this repo in
+   a writable location (i.e. `/home/gherunner`)
+
+7. set the `GITHUB`, `TARGET` and `TOKEN` settings as appropriate in the
+   `ghe-actions-docker.env` file (further information and examples are
+   provided in this file).
+
 ## Build
 
-To build the container image:
+To build the container image (as the `gherunner` user):
 
 ```
 docker build --tag ghe-actions-runner .
@@ -58,7 +65,7 @@ docker build --tag ghe-actions-runner .
 
 ## Run
 
-To run the container image:
+To run the container image (as the `gherunner` user):
 
 ```
 docker compose up --scale runner=X -d
@@ -71,8 +78,10 @@ where `X` is the number of runners.
 
 Runners should automatically clean up after themselves once stopped, but if
 a SIGKILL occurs, a container may get stuck in the "Offline" state. Should
-this happen, run the `./delete-offline-runners.sh` script with the required
-arguments.
+this happen, run the `./delete-offline-runners.sh` script.
+
+This script reads the `GITHUB`, `TARGET` and `TOKEN` settings from the
+`ghe-actions-docker.env` file .
 
 ## Useful commands
 
