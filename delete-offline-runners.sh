@@ -1,13 +1,8 @@
 #!/bin/bash
 
-GITHUB=$1
-TARGET=$2
-TOKEN=$3
+set -e
 
-if [[ "$#" -ne 3 ]]; then
-  echo "Usage: $0 GITHUB_URL TARGET TOKEN"
-  exit
-fi
+source ghe-actions-docker.env
 
 # test if the target is a repo, prepend /repos for the api
 curl --fail --silent -k -X GET -H "Authorization: token ${TOKEN}" -H "Accept: application/vnd.github+json" \
@@ -24,7 +19,7 @@ fi
 
 echo "Removing offline GH actions runners on https://${GITHUB}/${TARGET}..."
 
-RUNNER_LIST=$(curl -H "Authorization: token ${TOKEN}" -H "Accept: application/vnd.github+json" \
+RUNNER_LIST=$(curl -k -H "Authorization: token ${TOKEN}" -H "Accept: application/vnd.github+json" \
     https://api.${GITHUB}/${API_TARGET}/actions/runners \
     | jq '[.runners[] | select(.status | contains("offline")) | {id: .id}]')
 
@@ -34,7 +29,7 @@ for id in $(echo "$RUNNER_LIST" | jq -r '.[] | @base64'); do
         echo ${id} | base64 --decode | jq -r ${1}
     }
     echo "Deleting $(_jq '.id')"
-    curl -X DELETE -H "Accept: application/vnd.github+json" \
+    curl -k -X DELETE -H "Accept: application/vnd.github+json" \
          -H "Authorization: token ${TOKEN}" \
          https://api.${GITHUB}/${API_TARGET}/actions/runners/$(_jq '.id')
 done

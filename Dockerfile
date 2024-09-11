@@ -1,6 +1,6 @@
 FROM rockylinux:9.3
 
-ARG RUNNER_VERSION="2.314.1"
+ARG RUNNER_VERSION="2.319.1"
 
 # Prevents installdependencies.sh from prompting the user and blocking the image creation
 RUN useradd -m docker
